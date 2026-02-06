@@ -106,6 +106,113 @@ public class Test {
 }
 ```
 
+# Constructor Reference (Java 8)
+
+Constructor Reference is similar to Method Reference.
+
+Instead of referring a method, we refer a constructor.
+
+Used when Lambda creates an object.
+
+---
+
+## Syntax
+
+ClassName::new
+
+---
+
+## Example using Lambda
+
+```java
+interface Interf {
+    public Sample get();
+}
+
+class Sample {
+    Sample() {
+        System.out.println("Sample Object Created");
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+
+        Interf i = () -> new Sample();
+
+        Sample s = i.get();
+    }
+}
+```
+
+---
+
+## Using Constructor Reference
+
+```java
+public class Test {
+    public static void main(String[] args) {
+
+        Interf i = Sample::new;
+
+        Sample s = i.get();
+    }
+}
+```
+
+✔ Cleaner code  
+✔ Recommended when object creation only
+
+---
+
+## Parameterized Constructor
+
+```java
+interface Interf {
+    public Sample get(String name);
+}
+
+class Sample {
+    Sample(String name) {
+        System.out.println("Hello " + name);
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+
+        Interf i = Sample::new;
+        i.get("Durga");
+    }
+}
+```
+
+---
+
+## Important Rule
+
+Functional interface method arguments  
+must match constructor arguments.
+
+Otherwise compile error.
+
+---
+
+## When to use?
+
+If Lambda only creates object → use constructor reference.
+
+---
+
+## Difference
+
+| Feature | Lambda | Constructor Reference |
+|------|------|------|
+| Object creation | () -> new Sample() | Sample::new |
+| Readability | Medium | High |
+| Recommended | No | Yes |
+
+
 ---
 
 ## Types of Method References
