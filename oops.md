@@ -232,13 +232,15 @@ abstract class SubTest extends Test {
 # 7️⃣ Member Modifiers
 
 ---
+Access modifiers are essential tools that define how the members of a class, like variables, methods, and even the class itself, can be accessed from other parts of our program.access modifiers are essential tools that define how the members of a class, like variables, methods, and even the class itself, can be accessed from other parts of our program.
 
 ## 🔹 Public Member
 
 ⚠ First class modifier is checked.
 
 If class is not public  
-→ Member public hone ka fayda nahi.
+→ Even if a method inside that class is marked public, code in a different package cannot call it because it cannot access the class to create an instance or reference it.
+Inside the same package, the member behaves as truly public.
 
 ---
 
