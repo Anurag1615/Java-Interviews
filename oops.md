@@ -43,6 +43,7 @@ C.java
 ---
 
 # 2️⃣ Import Statement
+An import statement is a directive used to bring external code—such as classes, functions, or modules—into your current file
 
 ## 🔹 Fully Qualified Name
 
@@ -98,7 +99,7 @@ import java.util.*;
 ---
 
 # 3️⃣ Package Statement
-
+A package statement is a keyword in Java used  to define  a group of related classes and interfaces
 ## 🔹 Position in File
 
 Order must be:
