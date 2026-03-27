@@ -183,8 +183,9 @@ Important:
 
 ## 🔹 2. join()
 
-Waits for another thread to finish.
+Thread.join() is used to make one thread Waits for another thread to finish.
 
+if thread A call B.join() , thread A pause until thread B finished 
 ```java
 class Test {
 
@@ -213,7 +214,9 @@ Then main prints
 
 ## 🔹 3. yield()
 
-Gives hint to scheduler:
+Gives hint to scheduler that the current thread is willing to pause and let other threads of equal priority run.
+
+current thread move from running to Runnable 
 
 ```java
 Thread.yield();
