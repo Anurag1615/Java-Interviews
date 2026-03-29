@@ -92,6 +92,41 @@ UserBuilder → build() → User Object
 
 ---
 
+
+```# 🧩 UML Diagram (Modern Builder Pattern)
+
+```
+        +------------------+
+        |      Client      |
+        +------------------+
+                 |
+                 v
+        +----------------------+
+        |      Builder         |
+        |  (Static Inner Class)|
+        +----------------------+
+        | setName()            |
+        | setAge()             |
+        | setEmail()           |
+        | setPhone()           |
+        | build()              |
+        +----------------------+
+                 |
+                 v
+        +----------------------+
+        |       Product        |
+        |       (User)         |
+        +----------------------+
+        | name                 |
+        | age                  |
+        | email                |
+        | phone                |
+        +----------------------+
+
+
+
+---
+
 # 3. Implementation
 
 ## Step 1: Create Builder Class
