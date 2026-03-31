@@ -1,7 +1,7 @@
 # Factory Design Pattern
 
 ## 🔥 Definition
-> Factory Design Pattern provides an interface for creating objects, but allows subclasses or factory methods to decide which class to instantiate.
+>  Factory Design Pattern provides a way to create objects without exposing the creation logic and allows the system to decide which class to instantiate.
 
 ---
 
@@ -217,6 +217,32 @@ shape.draw();
 
 ---
 
+## 🧠 When Do We Really Need Concrete Factories?
+
+### ✅ Use CircleFactory / RectangleFactory when:
+
+- Object requires parameters  
+- Complex creation logic  
+- Validation needed  
+- External dependencies (DB/API/config)  
+
+---
+
+### ❌ Not required when:
+
+```java
+Circle::new
+```
+
+✔ Simple constructor  
+✔ No additional logic  
+
+---
+
+👉 In such cases, registry + Supplier is cleaner and preferred
+
+---
+
 # 🚨 Limitation of Factory Method
 
 👉 No direct way to select based on input (type)
@@ -294,12 +320,99 @@ class FactoryRegistry {
 
 ---
 
-### Step 4: Client
+## ⚠️ Issue with Above Registry (Eager Creation)
 
 ```java
-Shape shape = FactoryRegistry.getShape("CIRCLE");
-shape.draw();
+registry.put("CIRCLE", new CircleFactory());
 ```
+
+👉 Factories are created at class loading time  
+
+### Why this matters?
+
+- Unnecessary object creation  
+- Memory overhead  
+- Not efficient if factory is heavy  
+
+---
+
+## ✅ Improved Version → Lazy Factory Creation
+
+```java
+import java.util.function.Supplier;
+
+class FactoryRegistry {
+
+    private static final Map<String, Supplier<ShapeFactory>> registry = new HashMap<>();
+
+    static {
+        registry.put("CIRCLE", CircleFactory::new);
+        registry.put("RECTANGLE", RectangleFactory::new);
+    }
+
+    public static Shape getShape(String type) {
+        Supplier<ShapeFactory> supplier = registry.get(type.toUpperCase());
+        if (supplier == null) {
+            throw new IllegalArgumentException("Unknown type");
+        }
+        return supplier.get().create();
+    }
+}
+```
+
+---
+
+## 🧠 What if Object Needs Parameters?
+
+### Problem
+
+```java
+new Circle(radius);
+```
+
+👉 Cannot use:
+
+```java
+Circle::new
+```
+
+---
+
+## ✅ Solution → Use Factory Classes
+
+```java
+class CircleFactory implements ShapeFactory {
+
+    private double radius;
+
+    public CircleFactory(double radius) {
+        this.radius = radius;
+    }
+
+    public Shape create() {
+        return new Circle(radius);
+    }
+}
+```
+
+---
+
+## Usage
+
+```java
+ShapeFactory factory = new CircleFactory(10.5);
+Shape shape = factory.create();
+```
+
+---
+
+## 🎯 Key Insight
+
+| Case | Best Approach |
+|------|-------------|
+No parameters | Supplier |
+With parameters | Factory class |
+Complex logic | Factory class |
 
 ---
 
@@ -340,36 +453,15 @@ Client → ShapeFactory → Shape → (Circle / Rectangle)
 # 🧩 UML Diagram (Factory Method)
 
 ```
-        +------------------+
-        |      Client      |
-        +------------------+
-                 |
-                 v
-        +----------------------+
-        |    ShapeFactory      |  <<interface>>
-        +----------------------+
-        | createShape()        |
-        +----------------------+
-            /           \
-           /             \
-          v               v
-+----------------+   +----------------+
-| CircleFactory  |   | RectangleFactory|
-+----------------+   +----------------+
-| createShape()  |   | createShape()  |
-+----------------+   +----------------+
-        |                    |
-        v                    v
-    +--------+         +-----------+
-    | Circle |         | Rectangle |
-    +--------+         +-----------+
-        ^
-        |
-   +----------+
-   |  Shape   |
-   +----------+
-   | draw()   |
-   +----------+
+Client → Factory Interface → Concrete Factory → Product
+```
+
+---
+
+# 🧩 UML Diagram (Registry)
+
+```
+Client → Map → Factory → Object
 ```
 
 ---
@@ -395,7 +487,6 @@ Client → Registry → Factory → Object
 
 ✔ Loose coupling  
 ✔ OCP compliant  
-✔ No if-else  
 ✔ Scalable design  
 
 ---
@@ -432,14 +523,14 @@ Client → Registry → Factory → Object
 
 # 12. Pro Tip
 
-> Avoid if-else in factories. Use a registry (Map) to make the design scalable.
+> Use Supplier for simple cases and Factory classes for complex or parameterized object creation.
 
 ---
 
 # 🔥 Final Insight
 
 ```
-Simple Factory → Easy but breaks OCP & SRP
-Factory Method → SOLID but lacks selection
-Factory + Registry → Best real-world solution
+Simple Factory → Easy but limited
+Factory Method → Structured & flexible
+Registry + Lazy → Production ready
 ```
